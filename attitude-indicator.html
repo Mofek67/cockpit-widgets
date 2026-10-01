@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Attitude indicator</title>
+<style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
+<style>
+:root{--panel:#1C1F24;--line:#2E343C;--ink:#E9EEF2;--dim:#8E959E;--amber:#E9A13B}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:var(--panel)}
+body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0}
+.card{height:100%;min-height:200px;background:var(--panel);border-radius:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;overflow:hidden;cursor:crosshair}
+svg{flex:1;min-height:0;width:100%;max-width:340px}
+p{font-size:13px;color:var(--dim);text-align:center}
+p:empty{display:none}
+</style></head>
+<body>
+<div class="card" id="card">
+<svg viewBox="-100 -100 200 200" aria-label="Attitude indicator">
+  <defs>
+    <clipPath id="ball"><circle r="78"/></clipPath>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1F5E9C"/><stop offset="1" stop-color="#4A9BDB"/></linearGradient>
+    <linearGradient id="gnd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8E5C33"/><stop offset="1" stop-color="#5E3B20"/></linearGradient>
+  </defs>
+  <circle r="92" fill="#141619"/>
+  <circle r="90" fill="none" stroke="#2E343C" stroke-width="3"/>
+  <g clip-path="url(#ball)">
+    <g id="att">
+      <rect x="-220" y="-420" width="440" height="420" fill="url(#sky)"/>
+      <rect x="-220" y="0" width="440" height="420" fill="url(#gnd)"/>
+      <line x1="-220" x2="220" y1="0" y2="0" stroke="#fff" stroke-width="1.6"/>
+      <g id="ladder" stroke="#fff" stroke-width="1.2" fill="#fff" font-size="7" font-family="B612,sans-serif" text-anchor="middle"></g>
+      <path d="M0 -76 l-5 9 h10z" fill="#fff"/>
+    </g>
+  </g>
+  <g stroke="#E9EEF2" stroke-width="1.6" id="scale"></g>
+  <path d="M0 -79 l-5 -9 h10z" fill="#E9A13B"/>
+  <g stroke="#E9A13B" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M-58 0 H-24 V8"/><path d="M58 0 H24 V8"/>
+  </g>
+  <rect x="-3" y="-3" width="6" height="6" fill="#E9A13B"/>
+</svg>
+<p id="cap">Keep the blue side up.</p>
+</div>
+<script>
+const q=new URLSearchParams(location.search);
+if(q.has('caption'))cap.textContent=q.get('caption');
+const NS='http://www.w3.org/2000/svg',el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+const PX=3;
+[-20,-15,-10,-5,5,10,15,20].forEach(p=>{const y=-p*PX,w=p%10?10:22;
+  ladder.appendChild(el('line',{x1:-w,x2:w,y1:y,y2:y}));
+  if(!(p%10)){[-1,1].forEach(s=>{const t=el('text',{x:s*(w+9),y:y+2.5,stroke:'none'});t.textContent=Math.abs(p);ladder.appendChild(t)})}});
+[-60,-45,-30,-20,-10,10,20,30,45,60].forEach(a=>{const r1=80,r2=(Math.abs(a)%30===0)?89:85,t=(a-90)*Math.PI/180;
+  scale.appendChild(el('line',{x1:r1*Math.cos(t),y1:r1*Math.sin(t),x2:r2*Math.cos(t),y2:r2*Math.sin(t)}))});
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let bank=reduce?0:24,pitch=reduce?0:7,tb=0,tp=0;
+function draw(){att.setAttribute('transform',`rotate(${-bank}) translate(0 ${pitch*PX})`)}
+card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();tb=((e.clientX-r.left)/r.width-.5)*50;tp=(.5-(e.clientY-r.top)/r.height)*24});
+card.addEventListener('pointerleave',()=>{tb=0;tp=0});
+function loop(){bank+=(tb-bank)*.06;pitch+=(tp-pitch)*.06;draw();requestAnimationFrame(loop)}
+draw();if(!reduce)loop();
+</script>
+</body></html>

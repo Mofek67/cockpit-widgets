@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ATPL roulette</title>
+<style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
+<style>
+:root{--panel:#1C1F24;--line:#2E343C;--well:#16191D;--ink:#E9EEF2;--dim:#8E959E;--amber:#E9A13B;--violet:#9065B0}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:var(--panel)}
+body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
+.card{height:100%;min-height:250px;background:var(--panel);border-radius:0;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+h1{font-size:15px}.top span{font-size:12px;color:var(--dim)}
+.win{--h:52px;position:relative;height:calc(var(--h)*3);overflow:hidden;background:var(--well);border-radius:14px;-webkit-mask:linear-gradient(transparent,#000 30%,#000 70%,transparent);mask:linear-gradient(transparent,#000 30%,#000 70%,transparent)}
+.win::before{content:"";position:absolute;left:10px;right:10px;top:var(--h);height:var(--h);border:2px solid var(--violet);border-radius:10px;z-index:1;pointer-events:none}
+.reel{position:absolute;left:0;right:0;top:0;will-change:transform}
+.it{height:var(--h);display:flex;align-items:center;gap:14px;padding:0 24px}
+.it b{font-family:'B612 Mono',monospace;font-size:20px;color:var(--amber);flex:none;width:3.2ch}
+.it span{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.res{font-size:13px;color:var(--dim);min-height:18px;flex:1}
+button{border:0;border-radius:10px;padding:11px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;color:#fff;background:#5B3F86}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+button:disabled{opacity:.6;cursor:default}
+</style></head>
+<body>
+<div class="card">
+  <div class="top"><h1>Revision roulette</h1><span id="cnt">14 subjects</span></div>
+  <div class="win"><div class="reel" id="reel"></div></div>
+  <div class="res" id="res">Can't decide what to revise? Let the reel pick.</div>
+  <button id="spin">Spin</button>
+</div>
+<script>
+let S=[['010','Air Law'],['021','Airframe, Systems and Power Plant'],['022','Instrumentation'],['031','Mass and Balance'],['032','Performance'],['033','Flight Planning and Monitoring'],['040','Human Performance and Limitations'],['050','Meteorology'],['061','General Navigation'],['062','Radio Navigation'],['070','Operational Procedures'],['081','Principles of Flight'],['090','Communications'],['100','KSA']];
+const q=new URLSearchParams(location.search),skip=(q.get('skip')||'').split(',').map(s=>s.trim());
+S=S.filter(s=>!skip.includes(s[0]));if(!S.length)S=[['---','No subject left']];
+cnt.textContent=S.length+' subjects';
+const REP=12,H=()=>parseFloat(getComputedStyle(reel.parentNode).getPropertyValue('--h'))||52;
+for(let r=0;r<REP;r++)S.forEach(([c,n])=>{const d=document.createElement('div');d.className='it';d.innerHTML='<b></b><span></span>';d.children[0].textContent=c;d.children[1].textContent=n;reel.appendChild(d)});
+let pos=Math.random()*S.length|0;const place=i=>reel.style.transform=`translateY(${-(i-1)*H()}px)`;
+reel.style.transition='none';place(S.length+pos);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+spin.onclick=()=>{spin.disabled=true;const pick=Math.random()*S.length|0,start=pos%S.length;
+  reel.style.transition='none';place(S.length+start);reel.offsetHeight;
+  const target=S.length*(REP-2)+pick;
+  reel.style.transition=reduce?'none':'transform 2.6s cubic-bezier(.12,.72,.18,1)';place(target);
+  const done=()=>{pos=pick;reel.style.transition='none';place(S.length+pick);spin.disabled=false;res.textContent='Next session: '+S[pick][0]+' '+S[pick][1]+'. Block the slot now.'};
+  reduce?done():setTimeout(done,2700)};
+</script>
+</body></html>

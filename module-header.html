@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Module header</title>
+<style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#1C1F24}
+body{font-family:'B612',system-ui,sans-serif;padding:0;-webkit-font-smoothing:antialiased}
+.rwy{--c:#1C1F24;height:100%;min-height:110px;border-radius:0;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.12)),var(--c);color:#fff;position:relative;overflow:hidden;display:flex;align-items:center;padding:0 22px 0 18px;gap:20px}
+.edge{position:absolute;left:0;right:0;height:2px;background:rgba(255,255,255,.55)}
+.edge.t{top:12%}.edge.b{bottom:12%}
+.keys{display:flex;gap:5px;height:62%;flex:none}
+.keys i{width:6px;background:rgba(255,255,255,.9);border-radius:1px}
+.num{flex:none;font-family:'B612 Mono',monospace;font-weight:700;font-size:clamp(30px,9vh,54px);line-height:1;transform:rotate(90deg);letter-spacing:.05em;opacity:.95;width:1.3em;text-align:center}
+.txt{min-width:0}
+h1{font-size:clamp(20px,5vw,30px);font-weight:700;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+p{font-size:clamp(12px,2.6vw,14px);opacity:.8;margin-top:5px}
+.cl{flex:1;min-width:30px;height:4px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.75) 0 34px,transparent 34px 60px);align-self:center}
+@media (max-width:460px){.keys,.cl{display:none}}
+</style></head>
+<body>
+<div class="rwy" id="rwy">
+  <div class="edge t"></div><div class="edge b"></div>
+  <div class="keys" id="keys"></div>
+  <div class="num" id="num">00</div>
+  <div class="txt"><h1 id="h"></h1><p id="s"></p></div>
+  <div class="cl"></div>
+</div>
+<script>
+const MOD={
+ home:['Cockpit','From the first flight to the flight deck.','#1C1F24','00'],
+ preflight:['Pre-flight','Choose your path, then commit to it.','#1F4E79','01'],
+ flightplan:['Flight Plan','Fly your budget like a flight plan.','#3D5A3A','02'],
+ medical:['Medical','Clear the Class 1 without surprises.','#8E2E2A','03'],
+ theory:['Theory','Turn the syllabus into steady revision.','#573E82','04'],
+ logbook:['Logbook','Every hour, flown or simulated, counted.','#B0561A','05'],
+ tower:['Control Tower','Applications and schools, cleared one by one.','#98700F','06'],
+ hangar:['Hangar','Write each fact once and link it.','#684733','07'],
+ selection:['Selection','Aptitude tests, English and interview.','#A0457E','08']};
+const q=new URLSearchParams(location.search),m=MOD[(q.get('m')||'home').toLowerCase()]||MOD.home;
+h.textContent=q.get('title')||m[0];s.textContent=q.get('sub')??m[1];num.textContent=(q.get('num')||m[3]).slice(0,3);
+const col=q.get('color')?'#'+q.get('color').replace('#',''):m[2];rwy.style.setProperty('--c',col);document.documentElement.style.background=document.body.style.background=col;
+for(let i=0;i<8;i++)keys.appendChild(document.createElement('i'));
+document.title=h.textContent;
+</script>
+</body></html>

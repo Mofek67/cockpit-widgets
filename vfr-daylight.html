@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daylight</title>
+<style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
+<style>
+:root{--panel:#1C1F24;--line:#2E343C;--well:#16191D;--ink:#E9EEF2;--dim:#8E959E;--amber:#E9A13B;--cyan:#5EC4E6;--green:#5DBB7E}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:var(--panel)}
+body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
+.card{height:100%;min-height:260px;background:var(--panel);border-radius:0;padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.ap b{font-family:'B612 Mono',monospace;font-size:26px;line-height:1}
+.ap div{font-size:12px;color:var(--dim);margin-top:4px}
+.pill{font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;white-space:nowrap}
+.pill.day{background:rgba(93,187,126,.16);color:var(--green)}.pill.tw{background:rgba(233,161,59,.16);color:var(--amber)}.pill.night{background:rgba(94,196,230,.14);color:var(--cyan)}
+svg{flex:1;min-height:70px;width:100%}
+.times{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.times .k{font-size:10.5px;color:var(--dim)}
+.times .z{font-variant-numeric:tabular-nums;font-size:15px;font-weight:700;margin-top:2px}
+.times .l{font-size:11px;color:var(--dim)}
+.note{font-size:11px;color:var(--dim)}
+@media (max-width:420px){.times{grid-template-columns:repeat(2,1fr)}}
+</style></head>
+<body>
+<div class="card">
+  <div class="top"><div class="ap"><b id="code">LFPG</b><div id="nm">Paris Charles de Gaulle</div></div><span class="pill" id="st"></span></div>
+  <svg id="sky" aria-hidden="true"></svg>
+  <div class="times" id="times"></div>
+  <div class="note">Night (EASA) runs from the end of evening civil twilight to the start of morning civil twilight. Local column uses your device time.</div>
+</div>
+<script>
+const AP={LFPG:['Paris Charles de Gaulle',49.0097,2.5479],LFPO:['Paris Orly',48.7233,2.3794],LFPN:['Toussus-le-Noble',48.7519,2.1061],LFST:['Strasbourg',48.5383,7.6282],LFSB:['Basel Mulhouse',47.59,7.5292],LFBO:['Toulouse Blagnac',43.6293,1.3638],LFLL:['Lyon Saint-Exupéry',45.7256,5.0811],LFMN:['Nice',43.6584,7.2159],LFML:['Marseille',43.4367,5.215],LFBD:['Bordeaux',44.8283,-0.7156],LFRS:['Nantes',47.1532,-1.6107],LFQQ:['Lille',50.5633,3.0869],LFMT:['Montpellier',43.5762,3.963],LFRN:['Rennes',48.0695,-1.7348],LFBZ:['Biarritz',43.4684,-1.5311],LFKJ:['Ajaccio',41.9236,8.8029],EBBR:['Brussels',50.9014,4.4844],LSGG:['Geneva',46.2381,6.109],LSZH:['Zurich',47.4647,8.5492],ELLX:['Luxembourg',49.6233,6.2044],EGLL:['London Heathrow',51.47,-0.4543],EDDF:['Frankfurt',50.0333,8.5706],EHAM:['Amsterdam',52.3086,4.7639],LEMD:['Madrid',40.4719,-3.5626],LIRF:['Rome Fiumicino',41.8003,12.2389],CYUL:['Montréal',45.4706,-73.7408],GMMN:['Casablanca',33.3675,-7.5899],DTTA:['Tunis',36.851,10.2272],DAAG:['Algiers',36.691,3.2154],OMDB:['Dubai',25.2528,55.3644]};
+const q=new URLSearchParams(location.search);
+let icao=(q.get('icao')||'LFPG').toUpperCase(),name,lat,lon;
+if(q.get('lat')&&q.get('lon')){lat=+q.get('lat');lon=+q.get('lon');name=q.get('name')||'Custom position';icao=q.get('icao')?icao:'POS'}
+else{const a=AP[icao]||AP.LFPG;if(!AP[icao])icao='LFPG';[name,lat,lon]=a}
+code.textContent=icao;nm.textContent=name;
+const R=Math.PI/180;
+function sun(date,h0){ // returns [rise,set] Date or null
+  const jd=Date.UTC(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate(),12)/864e5+2440587.5;
+  const n=Math.round(jd-2451545.0+0.0008),Js=n-lon/360,M=(357.5291+0.98560028*Js)%360;
+  const C=1.9148*Math.sin(M*R)+0.02*Math.sin(2*M*R)+0.0003*Math.sin(3*M*R),L=(M+C+282.9372)%360;
+  const Jt=2451545+Js+0.0053*Math.sin(M*R)-0.0069*Math.sin(2*L*R),sd=Math.sin(L*R)*Math.sin(23.4397*R),cd=Math.cos(Math.asin(sd));
+  const cw=(Math.sin(h0*R)-Math.sin(lat*R)*sd)/(Math.cos(lat*R)*cd);if(cw<-1||cw>1)return null;
+  const w=Math.acos(cw)/R/360,d=j=>new Date((j-2440587.5)*864e5);return[d(Jt-w),d(Jt+w)]}
+const p=x=>String(x).padStart(2,'0'),z=d=>d?p(d.getUTCHours())+':'+p(d.getUTCMinutes())+'Z':'--',lo=d=>d?p(d.getHours())+':'+p(d.getMinutes()):'';
+const NS='http://www.w3.org/2000/svg',el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+function render(){
+  const now=new Date(),rs=sun(now,-0.833),cv=sun(now,-6);
+  const rows=[['Civil dawn',cv&&cv[0]],['Sunrise',rs&&rs[0]],['Sunset',rs&&rs[1]],['Night begins',cv&&cv[1]]];
+  times.innerHTML='';rows.forEach(([k,d])=>{const e=document.createElement('div');e.innerHTML='<div class="k"></div><div class="z"></div><div class="l"></div>';
+    e.children[0].textContent=k;e.children[1].textContent=z(d);e.children[2].textContent=d?'local '+lo(d):'';times.appendChild(e)});
+  sky.innerHTML='';
+  if(!cv||!rs){st.className='pill day';st.textContent='Polar day or night';return}
+  const W=sky.clientWidth||400,H=sky.clientHeight||110;sky.setAttribute('viewBox','0 0 '+W+' '+H);const T0=+cv[0],T1=+cv[1],X=f=>14+f*(W-28),Y=f=>H-8-Math.sin(Math.PI*f)*(H-22),fr=(rs[0]-T0)/(T1-T0),yh=Y(fr);
+  let d='';for(let i=0;i<=60;i++){const f=i/60;d+=(i?'L':'M')+X(f).toFixed(1)+' '+Y(f).toFixed(1)}
+  sky.append(el('clipPath',{id:'up'}));sky.lastChild.append(el('rect',{x:0,y:0,width:W,height:yh}));
+  sky.append(el('path',{d,fill:'none',stroke:'#2E343C','stroke-width':2,'stroke-dasharray':'4 5'}));
+  sky.append(el('path',{d,fill:'none',stroke:'#E9A13B','stroke-width':2.5,'clip-path':'url(#up)'}));
+  sky.append(el('line',{x1:0,x2:W,y1:yh,y2:yh,stroke:'#8E959E','stroke-width':1,opacity:.5}));
+  const t=+now;let f=(t-T0)/(T1-T0),state;
+  if(t<T0||t>T1){state=['night','Night']}else if(t<rs[0]||t>rs[1]){state=['tw','Civil twilight']}else{state=['day','Day']}
+  st.className='pill '+state[0];st.textContent=state[1];
+  if(f>=0&&f<=1){sky.append(el('circle',{cx:X(f),cy:Y(f),r:8,fill:state[0]==='day'?'#E9A13B':'#B7812F'}))}
+}
+render();setInterval(render,60000);addEventListener('resize',render);
+</script>
+</body></html>
