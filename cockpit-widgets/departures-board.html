@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Departures</title>
+<style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
+<style>
+:root{--board:#191919;--tile:#262626;--tile2:#202020;--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--green:#10B981}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#191919;overflow:hidden}
+body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
+.board{height:100%;display:flex;flex-direction:column;background:var(--board);border-radius:0;padding:16px 18px 18px;overflow:hidden;--fs:clamp(11px,2.3vw,17px)}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+header h1{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+header h1 svg{width:18px;height:18px;fill:var(--amber)}
+header span{font-variant-numeric:tabular-nums;font-size:13px;color:var(--dim)}
+table{flex:1;width:100%;border-collapse:separate;border-spacing:0 5px}
+th{font-size:11px;font-weight:400;color:var(--dim);text-align:left;padding:0 0 2px}
+td{padding:0;vertical-align:middle}
+.flaps{display:inline-flex;gap:2px}
+.f{position:relative;display:inline-block;width:calc(var(--fs)*.95);height:calc(var(--fs)*1.55);line-height:calc(var(--fs)*1.55);text-align:center;font-family:'B612 Mono',monospace;font-weight:700;font-size:var(--fs);border-radius:3px;background:linear-gradient(var(--tile) 50%,var(--tile2) 50%);color:var(--ink)}
+.f::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.55)}
+.st{font-family:'B612 Mono',monospace;font-size:calc(var(--fs)*.8);white-space:nowrap}
+.st{color:rgba(229,231,235,.78)}.st.done{color:var(--dim)}.st.now{color:var(--amber)}.st.next{color:var(--green)}
+@keyframes pulse{50%{opacity:.35}}
+.st.now{animation:pulse 1.6s ease-in-out infinite}
+.col-fl{width:18%}.col-gate{width:10%}.col-st{width:20%}
+@media (max-width:520px){.col-gate,.gate{display:none}}
+@media (prefers-reduced-motion:reduce){.st.now{animation:none}}
+</style></head>
+<body>
+<div class="board">
+  <header><h1><svg viewBox="0 0 24 24"><path d="M2.5 19h19v2h-19zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10 8 3.57l-1.93.51 4.14 7.17-4.97 1.33-1.97-1.54-1.45.39 2.59 4.49L21 11.49c.81-.23 1.28-1.05 1.07-1.85z"/></svg><span id="ttl" style="font-family:inherit;font-size:inherit;color:inherit">Departures</span></h1><span id="clk">--:--Z</span></header>
+  <table>
+    <thead><tr><th class="col-fl">Flight</th><th>Destination</th><th class="col-gate gate">Gate</th><th class="col-st">Remarks</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+<script>
+const q=new URLSearchParams(location.search);
+if(q.get('title'))ttl.textContent=q.get('title');
+const legs=[['FIRST FLIGHT','A1'],['CLASS 1','A2'],['PPL','B1'],['ATPL THEORY','B2'],['CPL IR','C1'],['MCC JOC','C2'],['TYPE RATING','D1'],['FLIGHT DECK','D2']];
+const now=Math.min(legs.length-1,Math.max(0,parseInt(q.get('now')??'2',10)||0));
+const W=Math.max(...legs.map(l=>l[0].length));
+const CH='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cells=[];
+function flaps(text,len){const w=document.createElement('span');w.className='flaps';
+  for(let i=0;i<len;i++){const s=document.createElement('span');s.className='f';const t=text[i]||' ';s.textContent=reduce?t:(t===' '?' ':CH[Math.random()*CH.length|0]);cells.push([s,t]);w.appendChild(s)}return w}
+legs.forEach((l,i)=>{
+  const tr=document.createElement('tr');
+  const fl=document.createElement('td');fl.appendChild(flaps('CKP'+(101+i),6));
+  const de=document.createElement('td');de.appendChild(flaps(l[0],W));
+  const ga=document.createElement('td');ga.className='gate';ga.appendChild(flaps(l[1],2));
+  const st=document.createElement('td');const s=document.createElement('span');
+  s.className='st '+(i<now?'done':i===now?'now':i===now+1?'next':'');
+  s.textContent=i<now?'Departed':i===now?'Boarding':i===now+1?'On time':'Scheduled';
+  st.appendChild(s);tr.append(fl,de,ga,st);rows.appendChild(tr)});
+if(!reduce){cells.forEach(([el,t],k)=>{if(t===' ')return;let n=6+(k%9)+Math.random()*10|0;
+  const spin=()=>{if(--n<=0){el.textContent=t;return}el.textContent=CH[Math.random()*CH.length|0];setTimeout(spin,55)};
+  setTimeout(spin,k*12)})}
+const p=x=>String(x).padStart(2,'0');
+const tick=()=>{const d=new Date();clk.textContent=p(d.getUTCHours())+':'+p(d.getUTCMinutes())+'Z'};tick();setInterval(tick,10000);
+</script>
+</body></html>

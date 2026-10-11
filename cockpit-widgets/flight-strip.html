@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flight strip</title>
+<style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
+<style>
+:root{--strip:#202020;--ink:#E5E7EB;--dim:#9CA3AF;--rule:#2F2F2F;--holder:#191919;--tab:#F59E0B;--amber:#F59E0B}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#191919;overflow:hidden}
+body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
+.holder{height:100%;min-height:96px;background:var(--holder);border-radius:0;padding:0;display:flex;align-items:stretch}
+.strip{flex:1;display:grid;grid-template-columns:auto 1.1fr 3fr 1.6fr;background:var(--strip);border-radius:4px;overflow:hidden}
+.strip>div{padding:8px 12px;border-right:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center;min-width:0}
+.strip>div:last-child{border-right:0}
+.tab{width:12px;padding:0!important;background:var(--tab)}
+.k{font-size:10px;color:var(--dim)}
+.cs{font-family:'B612 Mono',monospace;font-size:clamp(16px,3.6vw,22px);font-weight:700;line-height:1.1}
+.ty{font-family:'B612 Mono',monospace;font-size:12px;color:var(--dim);margin-top:2px}
+.mi{font-size:clamp(15px,3.4vw,20px);font-weight:700;line-height:1.25;margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.nx{font-size:13px;font-weight:700;margin-top:2px}
+.due{font-family:'B612 Mono',monospace;font-size:12px;color:var(--dim);margin-top:4px}
+.due.late{color:#F59E0B}
+@media (max-width:520px){.strip{grid-template-columns:auto 1fr 2fr}.strip>.last{display:none}}
+</style></head>
+<body>
+<div class="holder">
+  <div class="strip">
+    <div class="tab" id="tab"></div>
+    <div><div class="k">Callsign</div><div class="cs" id="cs">CKP001</div><div class="ty" id="ty">Student</div></div>
+    <div><div class="k">Current mission</div><div class="mi" id="mi">Get the Class 1 medical</div></div>
+    <div class="last"><div class="k">Next action</div><div class="nx" id="nx">Book an AeMC slot</div><div class="due" id="due"></div></div>
+  </div>
+</div>
+<script>
+const q=new URLSearchParams(location.search),g=(k,d)=>q.get(k)||d;
+cs.textContent=g('callsign','CKP001').toUpperCase().slice(0,8);ty.textContent=g('type','Student');
+mi.textContent=g('mission','Get the Class 1 medical');nx.textContent=g('next','Book an AeMC slot');
+const TAB={blue:'#337EA9',green:'#448361',red:'#D44C47',purple:'#9065B0',orange:'#D9730D',yellow:'#CB912F',brown:'#9F6B53'};
+if(q.get('tab'))tab.style.background=TAB[q.get('tab')]||'#'+q.get('tab').replace('#','');
+const M=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(q.get('due')||'');
+if(m){const d=new Date(+m[1],m[2]-1,+m[3]),left=Math.ceil((d-new Date().setHours(0,0,0,0))/864e5);
+ due.textContent='Due '+m[3]+' '+M[m[2]-1]+(left>=0?'  ('+left+'d)':'  (overdue)');if(left<0)due.classList.add('late')}
+</script>
+</body></html>

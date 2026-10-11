@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Study leg</title>
+<style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
+<style>
+:root{--panel:#191919;--line:#2F2F2F;--well:#202020;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--cyan:#10B981;--green:#10B981;--magenta:#F59E0B}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#191919;overflow:hidden}
+body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
+.card{height:100%;min-height:260px;background:var(--panel);border-radius:0;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.legs{display:flex;background:var(--well);border-radius:10px;padding:3px}
+.legs button{border:0;background:none;color:var(--dim);font:inherit;font-size:12px;padding:6px 11px;border-radius:8px;cursor:pointer}
+.legs button[aria-pressed=true]{background:var(--line);color:var(--ink)}
+.flown{font-size:12px;color:var(--dim)}
+.mid{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.rem{font-size:clamp(40px,12vw,64px);font-weight:700;line-height:.95;font-variant-numeric:tabular-nums}
+.phase{text-align:right}
+.phase b{display:block;font-size:16px;color:var(--magenta)}
+.phase span{font-size:12px;color:var(--dim)}
+svg{flex:1;min-height:60px;width:100%}
+.acts{display:flex;gap:8px}
+.acts button{flex:1;border:0;border-radius:10px;padding:10px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;color:var(--ink);background:var(--line)}
+.acts .go{background:rgba(16,185,129,.16);color:var(--green)}
+button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+</style></head>
+<body>
+<div class="card">
+  <div class="top">
+    <div class="legs" role="group" aria-label="Leg length"><button data-m="25">25 min</button><button data-m="50">50 min</button><button data-m="90">90 min</button></div>
+    <div class="flown" id="flown">0 legs flown this session</div>
+  </div>
+  <div class="mid"><div class="rem" id="rem">25:00</div><div class="phase"><b id="ph">Parked</b><span id="phs">Press Start to push back</span></div></div>
+  <svg id="prof" aria-hidden="true"></svg>
+  <div class="acts"><button class="go" id="go">Start</button><button id="rs">Reset</button></div>
+</div>
+<script>
+const q=new URLSearchParams(location.search);
+let len=(+q.get('min')||25)*60,left=len,run=false,t0=0,base=0,legsN=0,timer=null;
+const PH=[[0,'Climb','Warm up: skim, set the goal'],[.15,'Cruise','Deep work, no phone'],[.85,'Descent','Recap and self-test'],[1,'Blocks on','Log the session in Theory']];
+const p=x=>String(x).padStart(2,'0'),NS='http://www.w3.org/2000/svg',el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+function draw(f){const W=prof.clientWidth||400,H=prof.clientHeight||80;prof.setAttribute('viewBox','0 0 '+W+' '+H);prof.innerHTML='';
+  const x0=12,x1=W-12,yb=H-10,yt=12,pts=[[0,yb],[.15,yt],[.85,yt],[1,yb]].map(([a,y])=>[x0+a*(x1-x0),y]);
+  const d='M'+pts.map(q=>q.join(' ')).join('L');
+  prof.append(el('line',{x1:0,x2:W,y1:yb,y2:yb,stroke:'#2F2F2F','stroke-width':1}));
+  prof.append(el('path',{d,fill:'none',stroke:'#2F2F2F','stroke-width':2,'stroke-dasharray':'5 5'}));
+  const at=g=>{const X=x0+g*(x1-x0);let Y;if(g<.15)Y=yb+(yt-yb)*g/.15;else if(g<.85)Y=yt;else Y=yt+(yb-yt)*(g-.85)/.15;return[X,Y]};
+  const cp=el('clipPath',{id:'c'});cp.append(el('rect',{x:0,y:0,width:at(f)[0],height:H}));prof.append(cp);
+  prof.append(el('path',{d,fill:'none',stroke:'#F59E0B','stroke-width':2.5,'clip-path':'url(#c)'}));
+  const [X,Y]=at(f),ang=f<.15?-Math.atan2(yb-yt,.15*(x1-x0))/Math.PI*180:f<.85?0:Math.atan2(yb-yt,.15*(x1-x0))/Math.PI*180;
+  const g=el('g',{transform:`translate(${X} ${Y}) rotate(${ang+90})`});
+  g.append(el('path',{d:'M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z',fill:'#E5E7EB',transform:'scale(.85) translate(-11.5 -12)'}));
+  prof.append(g)}
+function phase(f){let i=0;while(i<PH.length-1&&f>=PH[i+1][0])i++;if(f>=1)i=3;ph.textContent=PH[i][1];phs.textContent=PH[i][2]}
+function upd(){if(run){left=Math.max(0,base-(Date.now()-t0)/1000)}
+  rem.textContent=p(Math.floor(Math.ceil(left)/60))+':'+p(Math.ceil(left)%60);const f=1-left/len;draw(f);if(run||left<len)phase(f);
+  if(run&&left<=0){run=false;clearInterval(timer);legsN++;flown.textContent=legsN+(legsN===1?' leg':' legs')+' flown this session';go.textContent='Start';chime()}}
+function chime(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[660,880].forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=f;g.gain.setValueAtTime(.0001,a.currentTime+i*.25);g.gain.exponentialRampToValueAtTime(.15,a.currentTime+i*.25+.02);g.gain.exponentialRampToValueAtTime(.0001,a.currentTime+i*.25+.4);o.connect(g).connect(a.destination);o.start(a.currentTime+i*.25);o.stop(a.currentTime+i*.25+.45)})}catch(e){}}
+go.onclick=()=>{if(left<=0)reset();if(run){run=false;clearInterval(timer);go.textContent='Resume';ph.textContent='Holding';phs.textContent='Paused. Resume when ready'}else{run=true;t0=Date.now();base=left;timer=setInterval(upd,250);go.textContent='Pause';upd()}};
+function reset(){run=false;clearInterval(timer);left=len;go.textContent='Start';ph.textContent='Parked';phs.textContent='Press Start to push back';upd()}
+rs.onclick=reset;
+document.querySelectorAll('.legs button').forEach(b=>{b.setAttribute('aria-pressed',+b.dataset.m*60===len);b.onclick=()=>{len=+b.dataset.m*60;document.querySelectorAll('.legs button').forEach(x=>x.setAttribute('aria-pressed',x===b));reset()}});
+addEventListener('resize',upd);upd();
+</script>
+</body></html>

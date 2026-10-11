@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>METAR decoder</title>
+<style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
+<style>
+:root{--panel:#191919;--line:#2F2F2F;--well:#202020;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--cyan:#10B981;--green:#10B981}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#191919;overflow:hidden}
+body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
+.card{height:100%;min-height:320px;background:var(--panel);border-radius:0;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+h1{font-size:15px}
+.ex{border:0;background:var(--line);color:var(--ink);font:inherit;font-size:12px;padding:6px 11px;border-radius:8px;cursor:pointer}
+textarea{width:100%;resize:none;height:62px;background:var(--well);border:1px solid var(--line);border-radius:12px;color:var(--cyan);font-family:'B612 Mono',monospace;font-size:14px;line-height:1.45;padding:10px 12px;text-transform:uppercase}
+textarea:focus,.ex:focus-visible{outline:2px solid var(--amber);outline-offset:1px}
+.out{flex:1;overflow:auto;scrollbar-width:none;display:grid;grid-template-columns:minmax(80px,max-content) 1fr;gap:0;align-content:start;border-radius:12px;background:var(--well)}
+.out>*{padding:8px 12px;border-bottom:1px solid #262626;font-size:13px;line-height:1.4}
+.out .tok{font-family:'B612 Mono',monospace;color:var(--amber);white-space:nowrap}
+.out .unk{color:var(--dim)}
+.empty{grid-column:1/-1;color:var(--dim);border:0}
+.out::-webkit-scrollbar{display:none}
+</style></head>
+<body>
+<div class="card">
+  <div class="top"><h1>METAR decoder</h1><button class="ex" id="ex">Try an example</button></div>
+  <textarea id="inp" spellcheck="false" aria-label="METAR" placeholder="Paste a METAR, e.g. LFPG 281030Z 24012G25KT 9999 -RA BKN025 14/09 Q1012 NOSIG"></textarea>
+  <div class="out" id="out"></div>
+</div>
+<script>
+const EX=['LFPG 281030Z 24012G25KT 200V280 9999 -RA FEW015 BKN025 14/09 Q1012 NOSIG','LFST 280630Z VRB02KT 0400 R05/0600VP1500U FG VV002 08/08 Q1021 BECMG 1200','LFMN 281200Z 09008KT CAVOK 23/14 Q1018 NOSIG','EGLL 281450Z 31018G32KT 6000 SHRA SCT012 BKN020CB 11/08 Q0998 TEMPO 3000 TSRA','LSZH 280850Z 05004KT 2500 -SN BR OVC006 M01/M02 Q1027'];
+const WX={MI:'shallow',BC:'patches of',PR:'partial',DR:'low drifting',BL:'blowing',SH:'showers of',TS:'thunderstorm',FZ:'freezing',DZ:'drizzle',RA:'rain',SN:'snow',SG:'snow grains',IC:'ice crystals',PL:'ice pellets',GR:'hail',GS:'small hail',UP:'unknown precipitation',BR:'mist',FG:'fog',FU:'smoke',VA:'volcanic ash',DU:'dust',SA:'sand',HZ:'haze',PO:'dust whirls',SQ:'squalls',FC:'funnel cloud',SS:'sandstorm',DS:'duststorm'};
+const CL={FEW:'Few (1–2 oktas)',SCT:'Scattered (3–4 oktas)',BKN:'Broken (5–7 oktas)',OVC:'Overcast (8 oktas)'};
+const n=s=>parseInt(s,10),t=s=>s[0]==='M'?-n(s.slice(1)):n(s);
+function wx(tok){let m=/^(\+|-|VC)?((?:MI|BC|PR|DR|BL|SH|TS|FZ)?)((?:DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PO|SQ|FC|SS|DS)*)$/.exec(tok);
+ if(!m||(!m[2]&&!m[3]))return null;const parts=[];
+ if(m[1]==='-')parts.push('light');if(m[1]==='+')parts.push('heavy');
+ if(m[2])parts.push(WX[m[2]]+(m[2]==='TS'&&m[3]?' with':''));const ph=(m[3].match(/../g)||[]).map(x=>WX[x]);if(ph.length)parts.push(ph.join(' and '));
+ let s=parts.join(' ');if(m[1]==='VC')s+=' in the vicinity';return s.charAt(0).toUpperCase()+s.slice(1)}
+function decode(raw){
+ const toks=raw.toUpperCase().replace(/=/g,'').trim().split(/\s+/).filter(Boolean),res=[];let trend=null,i=0;
+ while(i<toks.length){const k=toks[i];let m,v=null,lab=null;
+  if(trend){trend.push(k);i++;continue}
+  if(/^(METAR|SPECI)$/.test(k)){lab='Report';v=k==='SPECI'?'Special report':'Routine report'}
+  else if(k==='AUTO'){lab='Report';v='Automated station, no observer'}
+  else if(k==='COR'){lab='Report';v='Corrected report'}
+  else if(i<3&&/^[A-Z]{4}$/.test(k)&&!res.some(r=>r[1]==='Station')){lab='Station';v='ICAO code '+k}
+  else if(m=/^(\d{2})(\d{2})(\d{2})Z$/.exec(k)){lab='Time';v='Day '+n(m[1])+' of the month, '+m[2]+':'+m[3]+' UTC'}
+  else if(m=/^(\d{3}|VRB)(\d{2,3})(?:G(\d{2,3}))?(KT|MPS)$/.exec(k)){lab='Wind';const u=m[4]==='KT'?' kt':' m/s';
+   v=(n(m[2])===0&&m[1]!=='VRB')?'Calm':(m[1]==='VRB'?'Variable direction':'From '+m[1]+'°')+', '+n(m[2])+u+(m[3]?', gusting '+n(m[3])+u:'')}
+  else if(m=/^(\d{3})V(\d{3})$/.exec(k)){lab='Wind';v='Direction varying between '+m[1]+'° and '+m[2]+'°'}
+  else if(k==='CAVOK'){lab='Ceiling and visibility';v='OK: visibility 10 km or more, no cloud below 5,000 ft or MSA, no CB or TCU, no significant weather'}
+  else if(m=/^(\d{4})(N|NE|E|SE|S|SW|W|NW|NDV)?$/.exec(k)){lab='Visibility';const d=n(m[1]);v=d===9999?'10 km or more':d>=5000?(d/1000)+' km':d+' m';if(m[2]&&m[2]!=='NDV')v+=' towards '+m[2]}
+  else if(m=/^(\d{1,2}(?:\/\d)?|M1\/4)SM$/.exec(k)){lab='Visibility';v=m[1].replace('M','less than ')+' statute miles'}
+  else if(m=/^R(\d{2}[LCR]?)\/([PM])?(\d{4})(?:V([PM])?(\d{4}))?(FT)?\/?([UDN])?$/.exec(k)){lab='Runway visual range';const f=(p,x)=>(p==='P'?'more than ':p==='M'?'less than ':'')+n(x)+(m[6]?' ft':' m');
+   v='Runway '+m[1]+': '+f(m[2],m[3])+(m[5]?' varying to '+f(m[4],m[5]):'')+(m[7]?{U:', improving',D:', deteriorating',N:', no change'}[m[7]]:'')}
+  else if(m=/^(FEW|SCT|BKN|OVC)(\d{3}|\/\/\/)(CB|TCU|\/\/\/)?$/.exec(k)){lab='Cloud';v=CL[m[1]]+(m[2]==='///'?', base unknown':' at '+(n(m[2])*100).toLocaleString('en')+' ft')+(m[3]==='CB'?', cumulonimbus':m[3]==='TCU'?', towering cumulus':'')}
+  else if(m=/^VV(\d{3}|\/\/\/)$/.exec(k)){lab='Cloud';v='Sky obscured, vertical visibility '+(m[1]==='///'?'unknown':(n(m[1])*100)+' ft')}
+  else if(/^(NSC|NCD|SKC|CLR)$/.test(k)){lab='Cloud';v={NSC:'No significant cloud',NCD:'No cloud detected',SKC:'Sky clear',CLR:'No cloud below 12,000 ft'}[k]}
+  else if(m=/^(M?\d{2})\/(M?\d{2})?$/.exec(k)){lab='Temperature';const T=t(m[1]);v=T+'°C'+(m[2]?', dew point '+t(m[2])+'°C (spread '+(T-t(m[2]))+'°)':'')}
+  else if(m=/^Q(\d{4})$/.exec(k)){lab='QNH';v=n(m[1])+' hPa'}
+  else if(m=/^A(\d{4})$/.exec(k)){lab='Altimeter';v=(n(m[1])/100).toFixed(2)+' inHg'}
+  else if(k==='NOSIG'){lab='Trend';v='No significant change expected in the next 2 hours'}
+  else if(k==='BECMG'||k==='TEMPO'){trend=[k];i++;continue}
+  else if(m=/^RE(\w+)$/.exec(k)){lab='Recent weather';v=wx(m[1])||m[1]}
+  else if(k==='WS'){lab='Wind shear';v='Wind shear reported';}
+  else if(v=wx(k)){lab='Weather'}
+  else if(k==='RMK'){lab='Remarks';v=toks.slice(i+1).join(' ');res.push([k,lab,v]);break}
+  res.push([k,lab,v]);i++}
+ if(trend){const kind=trend[0]==='BECMG'?'Becoming':'Temporarily';res.push([trend.join(' '),'Trend',kind+': '+trend.slice(1).map(x=>{const d=decode('XXXX '+x).filter(r=>r[1]!=='Station')[0];return d&&d[2]?d[2].toLowerCase():x}).join('; ')])}
+ return res}
+function render(){const r=decode(inp.value);out.innerHTML='';
+ if(!r.length){out.innerHTML='<div class="empty">Paste a METAR above. Each group is decoded line by line.</div>';return}
+ r.forEach(([k,l,v])=>{const a=document.createElement('div');a.className='tok';a.textContent=k;const b=document.createElement('div');
+  if(v){b.innerHTML='<b></b> ';b.firstChild.textContent=l;b.append(v)}else{b.className='unk';b.textContent='Not decoded here. Check your met course.'}out.append(a,b)})}
+let e=0;ex.onclick=()=>{inp.value=EX[e++%EX.length];render()};
+inp.addEventListener('input',render);inp.value=EX[0];e=1;render();
+</script>
+</body></html>

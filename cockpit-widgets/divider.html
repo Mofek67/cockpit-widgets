@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Divider</title>
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#191919;overflow:hidden}
+body{display:flex;align-items:center;padding:0 6px}
+.d{--c:#F59E0B;flex:1;display:flex;align-items:center;gap:10px}
+.trail{flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--c) 0 12px,transparent 12px 20px);opacity:.55;-webkit-mask:linear-gradient(90deg,transparent,#000 40%);mask:linear-gradient(90deg,transparent,#000 40%)}
+svg{width:22px;height:22px;flex:none;fill:var(--c)}
+.rest{width:14%;height:2px;background:var(--c);opacity:.18}
+</style></head>
+<body>
+<div class="d" id="d">
+  <div class="trail"></div>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" transform="rotate(90 12 12)"/></svg>
+  <div class="rest"></div>
+</div>
+<script>
+const C={blue:'#337EA9',green:'#448361',red:'#D44C47',purple:'#9065B0',orange:'#D9730D',yellow:'#CB912F',brown:'#9F6B53',gray:'#8C8C8C',amber:'#F59E0B'};
+const c=new URLSearchParams(location.search).get('color');
+if(c)d.style.setProperty('--c',C[c]||'#'+c.replace('#',''));
+</script>
+</body></html>

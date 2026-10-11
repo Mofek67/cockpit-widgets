@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ATIS of the day</title>
+<style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
+<style>
+:root{--panel:#191919;--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--cyan:#10B981}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;background:#191919;overflow:hidden}
+body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
+.card{height:100%;min-height:120px;background:var(--panel);border-radius:0;display:flex;align-items:center;gap:20px;padding:18px 22px}
+.info{flex:none;width:84px;height:84px;border-radius:14px;border:2px solid var(--cyan);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;background:none;color:inherit;font:inherit}
+.info:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+.info b{font-family:'B612 Mono',monospace;font-size:40px;line-height:1;color:var(--cyan)}
+.info span{font-size:10px;color:var(--dim)}
+.txt{flex:1;min-width:0}
+blockquote{font-size:clamp(15px,3.6vw,20px);line-height:1.45;font-weight:700}
+.meta{font-size:12px;color:var(--dim);margin-top:8px}
+@media (max-width:360px){.card{flex-direction:column;align-items:flex-start}}
+</style></head>
+<body>
+<div class="card">
+  <button class="info" id="info" title="Next information"><b id="L">A</b><span id="W">Alfa</span></button>
+  <div class="txt"><blockquote id="S"></blockquote><div class="meta" id="meta"></div></div>
+</div>
+<script>
+const NATO=['Alfa','Bravo','Charlie','Delta','Echo','Foxtrot','Golf','Hotel','India','Juliett','Kilo','Lima','Mike','November','Oscar','Papa','Quebec','Romeo','Sierra','Tango','Uniform','Victor','Whiskey','X-ray','Yankee','Zulu'];
+const SAY=[
+'Aviate, navigate, communicate.',
+'Plan the flight, fly the plan.',
+'Takeoffs are optional. Landings are mandatory.',
+'There are old pilots and bold pilots, but very few old, bold pilots.',
+'The most useless things in aviation: runway behind you, altitude above you, fuel in the truck.',
+'Never let the aircraft take you somewhere your brain didn\u2019t get to first.',
+'Keep the blue side up.',
+'Speed is life, altitude is life insurance.',
+'Fly the aircraft all the way to the ramp.',
+'A checklist is not an insult to your memory.',
+'It is better to be on the ground wishing you were in the air than in the air wishing you were on the ground.',
+'Learn from the mistakes of others. You won\u2019t live long enough to make them all yourself.',
+'Always leave yourself a way out.',
+'When in doubt, there is no doubt: go around.',
+'Trust your instruments.',
+'Stay ahead of the aircraft.'];
+const day=Math.floor(Date.now()/864e5);let k=0;
+function show(){const i=(day+k)%26;L.textContent=NATO[i][0];W.textContent=NATO[i];
+ S.textContent=SAY[(day*7+k)%SAY.length];
+ meta.textContent=k?'Aviation saying. Tap the letter for the next information.':'Aviation saying. Information '+NATO[i]+' is current until 0000Z.'}
+info.onclick=()=>{k++;show()};show();
+</script>
+</body></html>
