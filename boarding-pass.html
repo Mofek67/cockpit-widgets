@@ -3,16 +3,16 @@
 <title>Boarding pass</title>
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
-:root{--paper:#F7F9FB;--ink:#15314D;--dim:#6C7F92;--blue:#337EA9;--deep:#1F4E79;--amber:#E9A13B;--bg:#191919}
+:root{--paper:#202020;--ink:#E5E7EB;--dim:#9CA3AF;--blue:#F59E0B;--deep:#262626;--amber:#F59E0B;--bg:#191919}
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:var(--bg)}
-body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:6px;-webkit-font-smoothing:antialiased}
-.pass{height:100%;min-height:190px;display:flex;filter:drop-shadow(0 1px 2px rgba(20,40,70,.18)) drop-shadow(0 6px 18px rgba(20,40,70,.12))}
+html,body{height:100%;background:#191919;overflow:hidden}
+body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
+.pass{height:100%;min-height:190px;display:flex;}
 .main,.stub{background:var(--paper);position:relative}
 .main{flex:1;border-radius:16px 0 0 16px;display:flex;flex-direction:column;overflow:hidden;
  -webkit-mask:radial-gradient(circle 10px at 100% 0,#0000 98%,#000) top right/100% 51% no-repeat,radial-gradient(circle 10px at 100% 100%,#0000 98%,#000) bottom right/100% 51% no-repeat;
  mask:radial-gradient(circle 10px at 100% 0,#0000 98%,#000) top right/100% 51% no-repeat,radial-gradient(circle 10px at 100% 100%,#0000 98%,#000) bottom right/100% 51% no-repeat}
-.stub{width:30%;min-width:150px;border-radius:0 16px 16px 0;border-left:2px dashed #C9D3DD;padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;
+.stub{width:30%;min-width:150px;border-radius:0 16px 16px 0;border-left:2px dashed #3A3A3A;padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;
  -webkit-mask:radial-gradient(circle 10px at 0 0,#0000 98%,#000) top left/100% 51% no-repeat,radial-gradient(circle 10px at 0 100%,#0000 98%,#000) bottom left/100% 51% no-repeat;
  mask:radial-gradient(circle 10px at 0 0,#0000 98%,#000) top left/100% 51% no-repeat,radial-gradient(circle 10px at 0 100%,#0000 98%,#000) bottom left/100% 51% no-repeat}
 .band{background:var(--deep);color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center}
@@ -23,7 +23,7 @@ body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:6px;-webki
 .route{display:flex;align-items:center;gap:14px}
 .code{font-family:'B612 Mono',monospace;font-size:clamp(26px,6vw,38px);font-weight:700;line-height:1}
 .city{font-size:12px;color:var(--dim);margin-top:4px}
-.path{flex:1;height:2px;background:repeating-linear-gradient(90deg,#AFC0D0 0 6px,transparent 6px 11px);position:relative}
+.path{flex:1;height:2px;background:repeating-linear-gradient(90deg,#3A3A3A 0 6px,transparent 6px 11px);position:relative}
 .path svg{position:absolute;left:50%;top:-9px;width:20px;height:20px;margin-left:-10px;fill:var(--blue);background:var(--paper)}
 .grid{display:grid;grid-template-columns:repeat(4,auto);gap:10px 18px;justify-content:space-between}
 .k{font-size:10.5px;color:var(--dim)}

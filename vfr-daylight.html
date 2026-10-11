@@ -3,16 +3,16 @@
 <title>Daylight</title>
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
-:root{--panel:#1C1F24;--line:#2E343C;--well:#16191D;--ink:#E9EEF2;--dim:#8E959E;--amber:#E9A13B;--cyan:#5EC4E6;--green:#5DBB7E}
+:root{--panel:#191919;--line:#2F2F2F;--well:#202020;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--cyan:#10B981;--green:#10B981}
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:var(--panel)}
+html,body{height:100%;background:#191919;overflow:hidden}
 body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
 .card{height:100%;min-height:260px;background:var(--panel);border-radius:0;padding:16px 20px;display:flex;flex-direction:column;gap:10px}
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .ap b{font-family:'B612 Mono',monospace;font-size:26px;line-height:1}
 .ap div{font-size:12px;color:var(--dim);margin-top:4px}
 .pill{font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;white-space:nowrap}
-.pill.day{background:rgba(93,187,126,.16);color:var(--green)}.pill.tw{background:rgba(233,161,59,.16);color:var(--amber)}.pill.night{background:rgba(94,196,230,.14);color:var(--cyan)}
+.pill.day{background:rgba(16,185,129,.16);color:var(--green)}.pill.tw{background:rgba(245,158,11,.16);color:var(--amber)}.pill.night{background:rgba(156,163,175,.14);color:var(--ink)}
 svg{flex:1;min-height:70px;width:100%}
 .times{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .times .k{font-size:10.5px;color:var(--dim)}
@@ -55,13 +55,13 @@ function render(){
   const W=sky.clientWidth||400,H=sky.clientHeight||110;sky.setAttribute('viewBox','0 0 '+W+' '+H);const T0=+cv[0],T1=+cv[1],X=f=>14+f*(W-28),Y=f=>H-8-Math.sin(Math.PI*f)*(H-22),fr=(rs[0]-T0)/(T1-T0),yh=Y(fr);
   let d='';for(let i=0;i<=60;i++){const f=i/60;d+=(i?'L':'M')+X(f).toFixed(1)+' '+Y(f).toFixed(1)}
   sky.append(el('clipPath',{id:'up'}));sky.lastChild.append(el('rect',{x:0,y:0,width:W,height:yh}));
-  sky.append(el('path',{d,fill:'none',stroke:'#2E343C','stroke-width':2,'stroke-dasharray':'4 5'}));
-  sky.append(el('path',{d,fill:'none',stroke:'#E9A13B','stroke-width':2.5,'clip-path':'url(#up)'}));
-  sky.append(el('line',{x1:0,x2:W,y1:yh,y2:yh,stroke:'#8E959E','stroke-width':1,opacity:.5}));
+  sky.append(el('path',{d,fill:'none',stroke:'#2F2F2F','stroke-width':2,'stroke-dasharray':'4 5'}));
+  sky.append(el('path',{d,fill:'none',stroke:'#F59E0B','stroke-width':2.5,'clip-path':'url(#up)'}));
+  sky.append(el('line',{x1:0,x2:W,y1:yh,y2:yh,stroke:'#9CA3AF','stroke-width':1,opacity:.5}));
   const t=+now;let f=(t-T0)/(T1-T0),state;
   if(t<T0||t>T1){state=['night','Night']}else if(t<rs[0]||t>rs[1]){state=['tw','Civil twilight']}else{state=['day','Day']}
   st.className='pill '+state[0];st.textContent=state[1];
-  if(f>=0&&f<=1){sky.append(el('circle',{cx:X(f),cy:Y(f),r:8,fill:state[0]==='day'?'#E9A13B':'#B7812F'}))}
+  if(f>=0&&f<=1){sky.append(el('circle',{cx:X(f),cy:Y(f),r:8,fill:state[0]==='day'?'#F59E0B':'#B45309'}))}
 }
 render();setInterval(render,60000);addEventListener('resize',render);
 </script>

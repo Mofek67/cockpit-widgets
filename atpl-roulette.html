@@ -3,9 +3,9 @@
 <title>ATPL roulette</title>
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
-:root{--panel:#1C1F24;--line:#2E343C;--well:#16191D;--ink:#E9EEF2;--dim:#8E959E;--amber:#E9A13B;--violet:#9065B0}
+:root{--panel:#191919;--line:#2F2F2F;--well:#202020;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--violet:#F59E0B}
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:var(--panel)}
+html,body{height:100%;background:#191919;overflow:hidden}
 body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
 .card{height:100%;min-height:250px;background:var(--panel);border-radius:0;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
 .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
@@ -17,7 +17,7 @@ h1{font-size:15px}.top span{font-size:12px;color:var(--dim)}
 .it b{font-family:'B612 Mono',monospace;font-size:20px;color:var(--amber);flex:none;width:3.2ch}
 .it span{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .res{font-size:13px;color:var(--dim);min-height:18px;flex:1}
-button{border:0;border-radius:10px;padding:11px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;color:#fff;background:#5B3F86}
+button{border:0;border-radius:10px;padding:11px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;color:var(--amber);background:rgba(245,158,11,.14)}
 button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 button:disabled{opacity:.6;cursor:default}
 </style></head>

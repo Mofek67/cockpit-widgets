@@ -3,9 +3,9 @@
 <title>Attitude indicator</title>
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
-:root{--panel:#1C1F24;--line:#2E343C;--ink:#E9EEF2;--dim:#8E959E;--amber:#E9A13B}
+:root{--panel:#191919;--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B}
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:var(--panel)}
+html,body{height:100%;background:#191919;overflow:hidden}
 body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0}
 .card{height:100%;min-height:200px;background:var(--panel);border-radius:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;overflow:hidden;cursor:crosshair}
 svg{flex:1;min-height:0;width:100%;max-width:340px}
@@ -20,8 +20,8 @@ p:empty{display:none}
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1F5E9C"/><stop offset="1" stop-color="#4A9BDB"/></linearGradient>
     <linearGradient id="gnd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8E5C33"/><stop offset="1" stop-color="#5E3B20"/></linearGradient>
   </defs>
-  <circle r="92" fill="#141619"/>
-  <circle r="90" fill="none" stroke="#2E343C" stroke-width="3"/>
+  <circle r="92" fill="#141414"/>
+  <circle r="90" fill="none" stroke="#2F2F2F" stroke-width="3"/>
   <g clip-path="url(#ball)">
     <g id="att">
       <rect x="-220" y="-420" width="440" height="420" fill="url(#sky)"/>
@@ -31,12 +31,12 @@ p:empty{display:none}
       <path d="M0 -76 l-5 9 h10z" fill="#fff"/>
     </g>
   </g>
-  <g stroke="#E9EEF2" stroke-width="1.6" id="scale"></g>
-  <path d="M0 -79 l-5 -9 h10z" fill="#E9A13B"/>
-  <g stroke="#E9A13B" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <g stroke="#E5E7EB" stroke-width="1.6" id="scale"></g>
+  <path d="M0 -79 l-5 -9 h10z" fill="#F59E0B"/>
+  <g stroke="#F59E0B" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
     <path d="M-58 0 H-24 V8"/><path d="M58 0 H24 V8"/>
   </g>
-  <rect x="-3" y="-3" width="6" height="6" fill="#E9A13B"/>
+  <rect x="-3" y="-3" width="6" height="6" fill="#F59E0B"/>
 </svg>
 <p id="cap">Keep the blue side up.</p>
 </div>

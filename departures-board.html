@@ -3,9 +3,9 @@
 <title>Departures</title>
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
-:root{--board:#1C1F24;--tile:#2A2F36;--tile2:#23272D;--line:#2E343C;--ink:#F1F3EC;--dim:#8E959E;--amber:#E9A13B;--green:#5DBB7E}
+:root{--board:#191919;--tile:#262626;--tile2:#202020;--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--green:#10B981}
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:var(--board)}
+html,body{height:100%;background:#191919;overflow:hidden}
 body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
 .board{height:100%;display:flex;flex-direction:column;background:var(--board);border-radius:0;padding:16px 18px 18px;overflow:hidden;--fs:clamp(11px,2.3vw,17px)}
 header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
@@ -19,7 +19,7 @@ td{padding:0;vertical-align:middle}
 .f{position:relative;display:inline-block;width:calc(var(--fs)*.95);height:calc(var(--fs)*1.55);line-height:calc(var(--fs)*1.55);text-align:center;font-family:'B612 Mono',monospace;font-weight:700;font-size:var(--fs);border-radius:3px;background:linear-gradient(var(--tile) 50%,var(--tile2) 50%);color:var(--ink)}
 .f::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.55)}
 .st{font-family:'B612 Mono',monospace;font-size:calc(var(--fs)*.8);white-space:nowrap}
-.st{color:rgba(241,243,236,.78)}.st.done{color:var(--dim)}.st.now{color:var(--amber)}.st.next{color:var(--green)}
+.st{color:rgba(229,231,235,.78)}.st.done{color:var(--dim)}.st.now{color:var(--amber)}.st.next{color:var(--green)}
 @keyframes pulse{50%{opacity:.35}}
 .st.now{animation:pulse 1.6s ease-in-out infinite}
 .col-fl{width:18%}.col-gate{width:10%}.col-st{width:20%}

@@ -3,19 +3,19 @@
 <title>Radar scope</title>
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
-:root{--panel:#1C1F24;--line:#2E343C;--ink:#E9EEF2;--dim:#8E959E;--amber:#E9A13B;--green:#4FD68B;--T:6s}
+:root{--panel:#191919;--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--green:#10B981;--T:6s}
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:var(--panel)}
+html,body{height:100%;background:#191919;overflow:hidden}
 body{font-family:'B612',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
 .card{position:relative;height:100%;min-height:160px;background:var(--panel);display:flex;align-items:center;justify-content:center}
 .scope{position:relative;width:calc(100vmin - 24px);height:calc(100vmin - 24px);min-width:136px;min-height:136px}
 .scope svg{position:absolute;inset:0;width:100%;height:100%;display:block}
 /* rotating beam: a conic wedge that trails behind a bright leading edge */
 .sweep{position:absolute;inset:2%;border-radius:50%;
-  background:conic-gradient(from 0deg,rgba(79,214,139,0) 0deg,rgba(79,214,139,0) 285deg,rgba(79,214,139,.05) 315deg,rgba(79,214,139,.34) 360deg);
+  background:conic-gradient(from 0deg,rgba(16,185,129,0) 0deg,rgba(16,185,129,0) 285deg,rgba(16,185,129,.05) 315deg,rgba(16,185,129,.34) 360deg);
   will-change:transform}
 .sweep::after{content:"";position:absolute;left:50%;top:0;width:1.5px;height:50%;margin-left:-.75px;
-  background:linear-gradient(to top,rgba(79,214,139,0),var(--green))}
+  background:linear-gradient(to top,rgba(16,185,129,0),var(--green))}
 .run .sweep{animation:turn var(--T) linear infinite}
 @keyframes turn{to{transform:rotate(360deg)}}
 .grid{fill:none;stroke:var(--green)}

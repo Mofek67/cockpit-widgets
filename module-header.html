@@ -4,9 +4,9 @@
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:#1C1F24}
+html,body{height:100%;background:#191919;overflow:hidden}
 body{font-family:'B612',system-ui,sans-serif;padding:0;-webkit-font-smoothing:antialiased}
-.rwy{--c:#1C1F24;height:100%;min-height:110px;border-radius:0;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.12)),var(--c);color:#fff;position:relative;overflow:hidden;display:flex;align-items:center;padding:0 22px 0 18px;gap:20px}
+.rwy{--c:#191919;height:100%;min-height:110px;border-radius:0;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(0,0,0,.12)),var(--c);color:#fff;position:relative;overflow:hidden;display:flex;align-items:center;padding:0 22px 0 18px;gap:20px}
 .edge{position:absolute;left:0;right:0;height:2px;background:rgba(255,255,255,.55)}
 .edge.t{top:12%}.edge.b{bottom:12%}
 .keys{display:flex;gap:5px;height:62%;flex:none}
@@ -28,7 +28,7 @@ p{font-size:clamp(12px,2.6vw,14px);opacity:.8;margin-top:5px}
 </div>
 <script>
 const MOD={
- home:['Cockpit','From the first flight to the flight deck.','#1C1F24','00'],
+ home:['Cockpit','From the first flight to the flight deck.','#191919','00'],
  preflight:['Pre-flight','Choose your path, then commit to it.','#1F4E79','01'],
  flightplan:['Flight Plan','Fly your budget like a flight plan.','#3D5A3A','02'],
  medical:['Medical','Clear the Class 1 without surprises.','#8E2E2A','03'],
