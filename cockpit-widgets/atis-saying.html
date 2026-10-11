@@ -3,9 +3,9 @@
 <title>ATIS of the day</title>
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
-:root{--panel:#191919;--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--cyan:#10B981}
+:root{--panel:var(--bg,#191919);--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--cyan:#10B981}
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:#191919;overflow:hidden}
+html,body{height:100%;background:var(--bg,#191919);overflow:hidden}
 body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
 .card{height:100%;min-height:120px;background:var(--panel);border-radius:0;display:flex;align-items:center;gap:20px;padding:18px 22px}
 .info{flex:none;width:84px;height:84px;border-radius:14px;border:2px solid var(--cyan);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;background:none;color:inherit;font:inherit}
@@ -16,7 +16,7 @@ body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-
 blockquote{font-size:clamp(15px,3.6vw,20px);line-height:1.45;font-weight:700}
 .meta{font-size:12px;color:var(--dim);margin-top:8px}
 @media (max-width:360px){.card{flex-direction:column;align-items:flex-start}}
-</style></head>
+</style><script>(function(){var b=new URLSearchParams(location.search).get('bg');if(!b)return;var r=document.documentElement.style;if(b==='peek'){r.setProperty('--bg','#202020');r.setProperty('--well','#282828');r.setProperty('--tile','#2E2E2E');r.setProperty('--tile2','#282828');r.setProperty('--line','#363636')}else if(/^[0-9a-fA-F]{3,8}$/.test(b)){r.setProperty('--bg','#'+b)}})()</script></head>
 <body>
 <div class="card">
   <button class="info" id="info" title="Next information"><b id="L">A</b><span id="W">Alfa</span></button>

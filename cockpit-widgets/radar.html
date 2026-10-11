@@ -3,9 +3,9 @@
 <title>Radar scope</title>
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
-:root{--panel:#191919;--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--green:#10B981;--T:6s}
+:root{--panel:var(--bg,#191919);--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--green:#10B981;--T:6s}
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:#191919;overflow:hidden}
+html,body{height:100%;background:var(--bg,#191919);overflow:hidden}
 body{font-family:'B612',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;overflow:hidden}
 .card{position:relative;height:100%;min-height:160px;background:var(--panel);display:flex;align-items:center;justify-content:center}
 .scope{position:relative;width:calc(100vmin - 24px);height:calc(100vmin - 24px);min-width:136px;min-height:136px}
@@ -34,7 +34,7 @@ body{font-family:'B612',system-ui,sans-serif;color:var(--ink);-webkit-font-smoot
 .rng{right:14px;bottom:12px;font-family:'B612 Mono',ui-monospace,monospace;letter-spacing:.04em}
 @media (max-width:210px),(max-height:210px){.cap,.rng{display:none}}
 @media (prefers-reduced-motion:reduce){.run .sweep,.run .blip,.run .drift{animation:none}.blip{opacity:.7}}
-</style></head>
+</style><script>(function(){var b=new URLSearchParams(location.search).get('bg');if(!b)return;var r=document.documentElement.style;if(b==='peek'){r.setProperty('--bg','#202020');r.setProperty('--well','#282828');r.setProperty('--tile','#2E2E2E');r.setProperty('--tile2','#282828');r.setProperty('--line','#363636')}else if(/^[0-9a-fA-F]{3,8}$/.test(b)){r.setProperty('--bg','#'+b)}})()</script></head>
 <body>
 <div class="card" id="card">
   <div class="cap" id="cap">Traffic</div>

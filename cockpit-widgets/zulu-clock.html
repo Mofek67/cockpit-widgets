@@ -3,9 +3,9 @@
 <title>Zulu clock</title>
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
-:root{--panel:#191919;--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B}
+:root{--panel:var(--bg,#191919);--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B}
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:#191919;overflow:hidden}
+html,body{height:100%;background:var(--bg,#191919);overflow:hidden}
 body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
 .card{height:100%;min-height:120px;background:var(--panel);border-radius:0;display:flex;align-items:stretch;overflow:hidden}
 .main{flex:1.6;padding:18px 22px;display:flex;flex-direction:column;justify-content:center;gap:6px}
@@ -19,7 +19,7 @@ body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-
 .d{font-size:13px;color:var(--dim);letter-spacing:.06em}
 .lt{font-size:clamp(22px,6vw,34px);font-weight:700;line-height:1}
 @media (max-width:380px){.card{flex-direction:column}.side{border-left:0;border-top:1px solid var(--line)}}
-</style></head>
+</style><script>(function(){var b=new URLSearchParams(location.search).get('bg');if(!b)return;var r=document.documentElement.style;if(b==='peek'){r.setProperty('--bg','#202020');r.setProperty('--well','#282828');r.setProperty('--tile','#2E2E2E');r.setProperty('--tile2','#282828');r.setProperty('--line','#363636')}else if(/^[0-9a-fA-F]{3,8}$/.test(b)){r.setProperty('--bg','#'+b)}})()</script></head>
 <body>
 <div class="card">
   <section class="main">

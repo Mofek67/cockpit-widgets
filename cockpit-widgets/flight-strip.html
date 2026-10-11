@@ -3,9 +3,9 @@
 <title>Flight strip</title>
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
-:root{--strip:#202020;--ink:#E5E7EB;--dim:#9CA3AF;--rule:#2F2F2F;--holder:#191919;--tab:#F59E0B;--amber:#F59E0B}
+:root{--strip:var(--well,#202020);--ink:#E5E7EB;--dim:#9CA3AF;--rule:#2F2F2F;--holder:var(--bg,#191919);--tab:#F59E0B;--amber:#F59E0B}
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:#191919;overflow:hidden}
+html,body{height:100%;background:var(--bg,#191919);overflow:hidden}
 body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
 .holder{height:100%;min-height:96px;background:var(--holder);border-radius:0;padding:0;display:flex;align-items:stretch}
 .strip{flex:1;display:grid;grid-template-columns:auto 1.1fr 3fr 1.6fr;background:var(--strip);border-radius:4px;overflow:hidden}
@@ -20,7 +20,7 @@ body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-
 .due{font-family:'B612 Mono',monospace;font-size:12px;color:var(--dim);margin-top:4px}
 .due.late{color:#F59E0B}
 @media (max-width:520px){.strip{grid-template-columns:auto 1fr 2fr}.strip>.last{display:none}}
-</style></head>
+</style><script>(function(){var b=new URLSearchParams(location.search).get('bg');if(!b)return;var r=document.documentElement.style;if(b==='peek'){r.setProperty('--bg','#202020');r.setProperty('--well','#282828');r.setProperty('--tile','#2E2E2E');r.setProperty('--tile2','#282828');r.setProperty('--line','#363636')}else if(/^[0-9a-fA-F]{3,8}$/.test(b)){r.setProperty('--bg','#'+b)}})()</script></head>
 <body>
 <div class="holder">
   <div class="strip">

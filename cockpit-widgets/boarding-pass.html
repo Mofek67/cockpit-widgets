@@ -3,9 +3,9 @@
 <title>Boarding pass</title>
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
-:root{--paper:#202020;--ink:#E5E7EB;--dim:#9CA3AF;--blue:#F59E0B;--deep:#262626;--amber:#F59E0B;--bg:#191919}
+:root{--paper:var(--well,#202020);--ink:#E5E7EB;--dim:#9CA3AF;--blue:#F59E0B;--deep:#262626;--amber:#F59E0B;}
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:#191919;overflow:hidden}
+html,body{height:100%;background:var(--bg,#191919);overflow:hidden}
 body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
 .pass{height:100%;min-height:190px;display:flex;}
 .main,.stub{background:var(--paper);position:relative}
@@ -32,7 +32,7 @@ body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-
 .bars{height:46px;display:flex;align-items:stretch;gap:0}
 .bars i{display:block;background:var(--ink)}
 @media (max-width:540px){.stub{display:none}.main{border-radius:16px;-webkit-mask:none;mask:none}.grid{grid-template-columns:repeat(2,auto)}}
-</style></head>
+</style><script>(function(){var b=new URLSearchParams(location.search).get('bg');if(!b)return;var r=document.documentElement.style;if(b==='peek'){r.setProperty('--bg','#202020');r.setProperty('--well','#282828');r.setProperty('--tile','#2E2E2E');r.setProperty('--tile2','#282828');r.setProperty('--line','#363636')}else if(/^[0-9a-fA-F]{3,8}$/.test(b)){r.setProperty('--bg','#'+b)}})()</script></head>
 <body>
 <div class="pass">
   <div class="main">

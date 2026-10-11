@@ -3,13 +3,13 @@
 <title>Divider</title>
 <style>
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:#191919;overflow:hidden}
+html,body{height:100%;background:var(--bg,#191919);overflow:hidden}
 body{display:flex;align-items:center;padding:0 6px}
 .d{--c:#F59E0B;flex:1;display:flex;align-items:center;gap:10px}
 .trail{flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--c) 0 12px,transparent 12px 20px);opacity:.55;-webkit-mask:linear-gradient(90deg,transparent,#000 40%);mask:linear-gradient(90deg,transparent,#000 40%)}
 svg{width:22px;height:22px;flex:none;fill:var(--c)}
 .rest{width:14%;height:2px;background:var(--c);opacity:.18}
-</style></head>
+</style><script>(function(){var b=new URLSearchParams(location.search).get('bg');if(!b)return;var r=document.documentElement.style;if(b==='peek'){r.setProperty('--bg','#202020');r.setProperty('--well','#282828');r.setProperty('--tile','#2E2E2E');r.setProperty('--tile2','#282828');r.setProperty('--line','#363636')}else if(/^[0-9a-fA-F]{3,8}$/.test(b)){r.setProperty('--bg','#'+b)}})()</script></head>
 <body>
 <div class="d" id="d">
   <div class="trail"></div>

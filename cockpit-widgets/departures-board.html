@@ -3,9 +3,9 @@
 <title>Departures</title>
 <style>@font-face{font-family:'B612';src:url(fonts/B612-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612';src:url(fonts/B612-Bold.woff2) format('woff2');font-weight:700;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Regular.woff2) format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'B612 Mono';src:url(fonts/B612Mono-Bold.woff2) format('woff2');font-weight:700;font-display:swap}</style>
 <style>
-:root{--board:#191919;--tile:#262626;--tile2:#202020;--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--green:#10B981}
+:root{--board:var(--bg,#191919);--tile:#262626;--tile2:#202020;--line:#2F2F2F;--ink:#E5E7EB;--dim:#9CA3AF;--amber:#F59E0B;--green:#10B981}
 *{box-sizing:border-box;margin:0}
-html,body{height:100%;background:#191919;overflow:hidden}
+html,body{height:100%;background:var(--bg,#191919);overflow:hidden}
 body{font-family:'B612',system-ui,sans-serif;color:var(--ink);padding:0;-webkit-font-smoothing:antialiased}
 .board{height:100%;display:flex;flex-direction:column;background:var(--board);border-radius:0;padding:16px 18px 18px;overflow:hidden;--fs:clamp(11px,2.3vw,17px)}
 header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
@@ -25,7 +25,7 @@ td{padding:0;vertical-align:middle}
 .col-fl{width:18%}.col-gate{width:10%}.col-st{width:20%}
 @media (max-width:520px){.col-gate,.gate{display:none}}
 @media (prefers-reduced-motion:reduce){.st.now{animation:none}}
-</style></head>
+</style><script>(function(){var b=new URLSearchParams(location.search).get('bg');if(!b)return;var r=document.documentElement.style;if(b==='peek'){r.setProperty('--bg','#202020');r.setProperty('--well','#282828');r.setProperty('--tile','#2E2E2E');r.setProperty('--tile2','#282828');r.setProperty('--line','#363636')}else if(/^[0-9a-fA-F]{3,8}$/.test(b)){r.setProperty('--bg','#'+b)}})()</script></head>
 <body>
 <div class="board">
   <header><h1><svg viewBox="0 0 24 24"><path d="M2.5 19h19v2h-19zm19.57-9.36c-.21-.8-1.04-1.28-1.84-1.06L14.92 10 8 3.57l-1.93.51 4.14 7.17-4.97 1.33-1.97-1.54-1.45.39 2.59 4.49L21 11.49c.81-.23 1.28-1.05 1.07-1.85z"/></svg><span id="ttl" style="font-family:inherit;font-size:inherit;color:inherit">Departures</span></h1><span id="clk">--:--Z</span></header>
@@ -44,7 +44,7 @@ const CH='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const cells=[];
 function flaps(text,len){const w=document.createElement('span');w.className='flaps';
-  for(let i=0;i<len;i++){const s=document.createElement('span');s.className='f';const t=text[i]||' ';s.textContent=reduce?t:(t===' '?' ':CH[Math.random()*CH.length|0]);cells.push([s,t]);w.appendChild(s)}return w}
+  for(let i=0;i<len;i++){const s=document.createElement('span');s.className='f';const t=text[i]||' ';s.textContent=t;cells.push([s,t]);w.appendChild(s)}return w}
 legs.forEach((l,i)=>{
   const tr=document.createElement('tr');
   const fl=document.createElement('td');fl.appendChild(flaps('CKP'+(101+i),6));
@@ -54,9 +54,8 @@ legs.forEach((l,i)=>{
   s.className='st '+(i<now?'done':i===now?'now':i===now+1?'next':'');
   s.textContent=i<now?'Departed':i===now?'Boarding':i===now+1?'On time':'Scheduled';
   st.appendChild(s);tr.append(fl,de,ga,st);rows.appendChild(tr)});
-if(!reduce){cells.forEach(([el,t],k)=>{if(t===' ')return;let n=6+(k%9)+Math.random()*10|0;
-  const spin=()=>{if(--n<=0){el.textContent=t;return}el.textContent=CH[Math.random()*CH.length|0];setTimeout(spin,55)};
-  setTimeout(spin,k*12)})}
+let played=false;function play(){if(played||reduce)return;played=true;const t0=performance.now();const plan=cells.filter(c=>c[1]!==' ').map(([el,t],k)=>({el,t,a:k*12,b:k*12+330+(k%9)*55+Math.random()*550}));let last=0;function frame(n){const e=n-t0,swap=n-last>50;if(swap)last=n;let busy=false;for(const c of plan){if(e<c.a){busy=true;continue}if(e>=c.b){if(c.el.textContent!==c.t)c.el.textContent=c.t;continue}busy=true;if(swap)c.el.textContent=CH[Math.random()*CH.length|0]}if(busy)requestAnimationFrame(frame);else plan.forEach(c=>c.el.textContent=c.t)}requestAnimationFrame(frame)}
+if('IntersectionObserver'in window){const io=new IntersectionObserver(es=>{if(es.some(x=>x.isIntersecting)){io.disconnect();play()}});io.observe(rows)}else play();
 const p=x=>String(x).padStart(2,'0');
 const tick=()=>{const d=new Date();clk.textContent=p(d.getUTCHours())+':'+p(d.getUTCMinutes())+'Z'};tick();setInterval(tick,10000);
 </script>
